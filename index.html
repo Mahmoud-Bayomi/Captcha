@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Captcha Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+
+        .captcha-container {
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .captcha-instruction {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .captcha-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .captcha-grid img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .captcha-grid img.selected {
+            border-color: #4CAF50;
+            transform: scale(1.05);
+        }
+
+        .submit-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .submit-button:hover {
+            background-color: #45a049;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .message.success {
+            color: #4CAF50;
+        }
+
+        .message.error {
+            color: #FF0000;
+        }
+    </style>
+</head>
+<body>
+    <div class="captcha-container">
+        <div class="captcha-instruction">
+            Select all images containing a cat
+        </div>
+        <div class="captcha-grid">
+            <img src="images/cat1.jpg" alt="Cat" data-is-cat="true">
+            <img src="images/dog.jpg" alt="Dog" data-is-cat="false">
+            <img src="images/cat2.jpg" alt="Cat" data-is-cat="true">
+            <img src="images/car.jpg" alt="Car" data-is-cat="false">
+            <img src="images/cat6.jpg" alt="Cat" data-is-cat="true">
+            <img src="images/cat4.jpg" alt="Cat" data-is-cat="true">
+        </div>
+        <button class="submit-button">Verify</button>
+        <div id="message" class="message"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const images = document.querySelectorAll('.captcha-grid img');
+            const submitButton = document.querySelector('.submit-button');
+            const messageDiv = document.getElementById('message');
+
+            // Add click event to toggle "selected" class
+            images.forEach(image => {
+                image.addEventListener('click', () => {
+                    image.classList.toggle('selected');
+                });
+            });
+
+            // Verify button logic
+            submitButton.addEventListener('click', () => {
+                const selectedImages = document.querySelectorAll('.captcha-grid img.selected');
+                const correctSelections = Array.from(selectedImages).filter(image => image.dataset.isCat === 'true');
+                const incorrectSelections = Array.from(selectedImages).filter(image => image.dataset.isCat === 'false');
+
+                if (correctSelections.length === 4 && incorrectSelections.length === 0) {
+                    messageDiv.textContent = 'Verification successful!';
+                    messageDiv.className = 'message success';
+                } else {
+                    messageDiv.textContent = 'Verification failed. Please try again.';
+                    messageDiv.className = 'message error';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
